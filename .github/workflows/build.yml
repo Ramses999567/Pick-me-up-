@@ -18,22 +18,20 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-       - name: Extract project
-         run: |
+      - name: Extract project
+        run: |
           unzip -q ArtaqiAlya_v9_Icon_Integrated.zip -d project
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/ArtaqiAlya_v8" >> $GITHUB_ENV
+
       - name: Fix version
         run: |
-          sed -i -E 's/^([[:space:]]*)versionCode .*/\1versionCode 15/' "$PROJECT_DIR/app/build.gradle"
-          sed -i -E 's/^([[:space:]]*)versionName .*/\1versionName "1.0.15"/' "$PROJECT_DIR/app/build.gradle"
+          sed -i -E "s/^([[:space:]]*)versionCode .*/\1versionCode $GITHUB_RUN_NUMBER/" "$PROJECT_DIR/app/build.gradle"
+          sed -i -E "s/^([[:space:]]*)versionName .*/\1versionName \"1.0.$GITHUB_RUN_NUMBER\"/" "$PROJECT_DIR/app/build.gradle"
+
       - name: Setup Android SDK
         run: |
-          export ANDROID_SDK_ROOT="$ANDROID_HOME"
-          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          which sdkmanager
-          sdkmanager --version
+          echo "/usr/local/lib/android/sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "/usr/local/lib/android/sdk/platform-tools" >> $GITHUB_PATH
           yes | sdkmanager --licenses || true
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
@@ -50,5 +48,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: PickMeUp-debug-apk
+          name: ArtaqiAlya-debug-apk
           path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
+  
