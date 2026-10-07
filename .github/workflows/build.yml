@@ -20,7 +20,7 @@ jobs:
 
       - name: Extract game project
         run: |
-          unzip -q PickMeUpWorld_v8_ArtaqiAlya_GitHubReady.zip -d project
+          unzip -q ArtaqiAlya_v9_Icon_Integrated.zip -d project
           PROJECT_DIR=$(find project -name settings.gradle -type f -printf '%h\n' | head -1)
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/$PROJECT_DIR" >> $GITHUB_ENV
       - name: Fix version
