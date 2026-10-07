@@ -53,27 +53,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Prepare signing key
-        env:
-          ARTAQI_KEYSTORE_PASSWORD: ${{ secrets.ARTAQI_KEYSTORE_PASSWORD }}
-        run: |
-          openssl enc -d -aes-256-cbc -pbkdf2 \
-            -in "$PROJECT_DIR/keystore.enc" \
-            -out "$RUNNER_TEMP/artaqi-release.jks" \
-            -pass env:ARTAQI_KEYSTORE_PASSWORD
-
-          echo "ARTAQI_KEYSTORE_PATH=$RUNNER_TEMP/artaqi-release.jks" >> "$GITHUB_ENV"
-
       - name: Build APK
-        env:
-          ARTAQI_KEY_ALIAS: ${{ secrets.ARTAQI_KEY_ALIAS }}
-          ARTAQI_KEY_PASSWORD: ${{ secrets.ARTAQI_KEY_PASSWORD }}
-        run: |
+         run: |
           cd "$PROJECT_DIR"
-          gradle assembleRelease
+           gradle assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: ArtaqiAlya-release-apk
-          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/release/app-release.apk
+  uses: actions/upload-artifact@v4
+  with:
+    name: ArtaqiAlya-debug-apk
+    path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
