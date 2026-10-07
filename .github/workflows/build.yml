@@ -18,11 +18,10 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Extract project
+       - name: Extract project
          run: |
-           unzip -q ArtaqiAlya_v9_Icon_Integrated.zip -d project
-           PROJECT_DIR=$(find project -name settings.gradle -type f -printf '%h\n' | head -1)
-           echo "PROJECT_DIR=$GITHUB_WORKSPACE/$PROJECT_DIR" >> $GITHUB_ENV
+          unzip -q ArtaqiAlya_v9_Icon_Integrated.zip -d project
+          echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/ArtaqiAlya_v8" >> $GITHUB_ENV
       - name: Fix version
         run: |
           sed -i -E 's/^([[:space:]]*)versionCode .*/\1versionCode 15/' "$PROJECT_DIR/app/build.gradle"
