@@ -20,7 +20,7 @@ jobs:
 
       - name: Extract project
         run: |
-          unzip -q ArtaqiAlya_v10_DirectIcon.zip -d project
+          unzip -q ArtaqiAlya_v11_FirstUpdate.zip -d project
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/ArtaqiAlya_v8" >> $GITHUB_ENV
 
       - name: Fix version
