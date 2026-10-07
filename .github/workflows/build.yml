@@ -23,7 +23,10 @@ jobs:
           unzip -q PickMeUpWorld_v8_ArtaqiAlya_GitHubReady.zip -d project
           PROJECT_DIR=$(find project -name settings.gradle -type f -printf '%h\n' | head -1)
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/$PROJECT_DIR" >> $GITHUB_ENV
-
+      - name: Fix version
+        run: |
+          sed -i -E 's/^([[:space:]]*)versionCode .*/\1versionCode 15/' "$PROJECT_DIR/app/build.gradle"
+          sed -i -E 's/^([[:space:]]*)versionName .*/\1versionName "1.0.15"/' "$PROJECT_DIR/app/build.gradle"
       - name: Setup Android SDK
         run: |
           export ANDROID_SDK_ROOT="$ANDROID_HOME"
