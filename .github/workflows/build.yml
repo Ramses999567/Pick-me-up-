@@ -36,7 +36,7 @@ jobs:
 
       - name: Setup signing
         run: |
-          printf '%s' "$ARTAQI_KEYSTORE_BASE64" | xxd -r -p > "$PROJECT_DIR/artaqi-release.jks"
+          printf '%s' "$ARTAQI_KEYSTORE_BASE64" | xxd -r -p > "$PROJECT_DIR/app/artaqi-release.jks"
           cat >> "$PROJECT_DIR/app/build.gradle" <<'EOF'
 
           android {
