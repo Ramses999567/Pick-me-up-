@@ -26,7 +26,7 @@ jobs:
 
       - name: Extract project
         run: |
-          unzip -q ArtaqiAlya_v12_Secure.zip -d project
+          unzip -q ArtaqiAlya_v13_Graphics.zip -d project
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/ArtaqiAlya_v8" >> $GITHUB_ENV
 
       - name: Fix version
