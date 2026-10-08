@@ -34,8 +34,8 @@ jobs:
           sed -i -E "s/^([[:space:]]*)versionCode .*/\1versionCode $GITHUB_RUN_NUMBER/" "$PROJECT_DIR/app/build.gradle"
           sed -i -E "s/^([[:space:]]*)versionName .*/\1versionName \"1.0.$GITHUB_RUN_NUMBER\"/" "$PROJECT_DIR/app/build.gradle"
 
-       - name: Setup signing
-          run: |
+      - name: Setup signing
+        run: |
           python3 - <<'PY'
           import os
           import re
