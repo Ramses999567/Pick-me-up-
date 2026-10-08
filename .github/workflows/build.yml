@@ -34,9 +34,31 @@ jobs:
           sed -i -E "s/^([[:space:]]*)versionCode .*/\1versionCode $GITHUB_RUN_NUMBER/" "$PROJECT_DIR/app/build.gradle"
           sed -i -E "s/^([[:space:]]*)versionName .*/\1versionName \"1.0.$GITHUB_RUN_NUMBER\"/" "$PROJECT_DIR/app/build.gradle"
 
-      - name: Setup signing
-        run: |
-          printf '%s' "$ARTAQI_KEYSTORE_BASE64" | base64 --decode > "$PROJECT_DIR/app/artaqi-release.jks"
+       - name: Setup signing
+          run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import base64
+
+          s = os.environ["ARTAQI_KEYSTORE_BASE64"]
+          s = re.sub(r'[^A-Za-z0-9+/=]', '', s)
+          s += '=' * ((4 - len(s) % 4) % 4)
+
+          data = base64.b64decode(s, validate=True)
+
+          if not data.startswith(b'\xfe\xed\xfe\xed'):
+              raise SystemExit("ERROR: decoded file is not a valid JKS")
+
+          if len(data) != 2225:
+              raise SystemExit(f"ERROR: JKS size is {len(data)}, expected 2225")
+
+          with open(os.environ["PROJECT_DIR"] + "/app/artaqi-release.jks", "wb") as f:
+              f.write(data)
+
+          print("Keystore decoded and validated successfully")
+          PY
+
           cat >> "$PROJECT_DIR/app/build.gradle" <<'EOF'
 
           android {
