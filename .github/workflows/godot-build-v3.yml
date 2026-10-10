@@ -73,7 +73,7 @@ jobs:
 
       - name: Extract project
         run: |
-          unzip -q ArtaqiAlya_Diagnostic_SimpleDraw.zip -d project
+          unzip -q ArtaqiAlya_Diagnostic_NoMainDraw.zip -d project
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/artaqi_godot" >> "$GITHUB_ENV"
           grep -E 'config/features|renderer/rendering_method' project/artaqi_godot/project.godot
 
