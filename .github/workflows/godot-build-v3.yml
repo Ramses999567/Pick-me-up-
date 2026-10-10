@@ -11,6 +11,7 @@ on:
       - '.github/workflows/godot-build-v3.yml'
       - 'ArtaqiAlya_Diagnostic_MainDraw_NoPlayerDraw.zip'
       - 'ArtaqiAlya_Godot_V1_Fixed_v4.zip'
+      - 'ArtaqiAlya_Godot_V1_Fixed_v4_TouchControls.zip'
 
 jobs:
   build:
@@ -76,15 +77,20 @@ jobs:
       
       - name: Extract project
         run: |
-          unzip -q ArtaqiAlya_Godot_V1_Fixed_v4.zip -d project
+          mkdir -p project
+          unzip -q ArtaqiAlya_Godot_V1_Fixed_v4_TouchControls.zip -d project
           echo "Files extracted:"
-          find project -maxdepth 3 -name project.godot -print
-          test -f project/artaqi_godot/project.godot || {
-            echo "ERROR: project.godot not found at expected path"
+          find project -maxdepth 5 -name project.godot -print
+
+          PROJECT_FILE="$(find project -maxdepth 5 -name project.godot -print -quit)"
+          test -n "$PROJECT_FILE" || {
+            echo "ERROR: project.godot not found inside ZIP"
             exit 1
           }
-          echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/artaqi_godot" >> "$GITHUB_ENV"
-          grep -E 'config/features|renderer/rendering_method' project/artaqi_godot/project.godot
+
+          PROJECT_DIR="$(dirname "$PROJECT_FILE")"
+          echo "PROJECT_DIR=$GITHUB_WORKSPACE/$PROJECT_DIR" >> "$GITHUB_ENV"
+          grep -E 'config/features|renderer/rendering_method' "$PROJECT_FILE"
 
 
       - name: Prepare Android export configuration
