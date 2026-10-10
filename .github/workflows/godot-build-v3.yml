@@ -10,6 +10,7 @@ on:
       - 'ArtaqiAlya_Diagnostic_WorldDraw.zip'
       - '.github/workflows/godot-build-v3.yml'
       - 'ArtaqiAlya_Diagnostic_MainDraw_NoPlayerDraw.zip'
+      - 'ArtaqiAlya_Godot_V1_Fixed_v4.zip'
 
 jobs:
   build:
@@ -72,11 +73,19 @@ jobs:
           unzip -q Godot_v4.6.3-stable_export_templates.tpz -d /tmp/godot_templates
           cp -r /tmp/godot_templates/templates/* "$HOME/.local/share/godot/export_templates/4.6.3.stable/"
 
+      
       - name: Extract project
         run: |
-          unzip -q ArtaqiAlya_Diagnostic_MainDraw_NoPlayerDraw.zip -d project
+          unzip -q ArtaqiAlya_Godot_V1_Fixed_v4.zip -d project
+          echo "Files extracted:"
+          find project -maxdepth 3 -name project.godot -print
+          test -f project/artaqi_godot/project.godot || {
+            echo "ERROR: project.godot not found at expected path"
+            exit 1
+          }
           echo "PROJECT_DIR=$GITHUB_WORKSPACE/project/artaqi_godot" >> "$GITHUB_ENV"
           grep -E 'config/features|renderer/rendering_method' project/artaqi_godot/project.godot
+
 
       - name: Prepare Android export configuration
         run: |
