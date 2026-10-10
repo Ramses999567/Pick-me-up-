@@ -136,22 +136,37 @@ jobs:
           screen/orientation=1
           EOF
 
-      - name: Prepare independent release keystore
+      
+      - name: Restore original release keystore
         env:
+          KEYSTORE_BASE64: ${{ secrets.ARTAQI_KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ARTAQI_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ARTAQI_KEY_ALIAS }}
         run: |
-          test -n "$KEYSTORE_PASSWORD" || (echo "ARTAQI_KEYSTORE_PASSWORD is missing" && exit 1)
-          test -n "$KEY_ALIAS" || (echo "ARTAQI_KEY_ALIAS is missing" && exit 1)
-          keytool -genkeypair -v \
+          set -e
+
+          test -n "$KEYSTORE_BASE64" || {
+            echo "ERROR: ARTAQI_KEYSTORE_BASE64 is missing"
+            exit 1
+          }
+
+          test -n "$KEYSTORE_PASSWORD" || {
+            echo "ERROR: ARTAQI_KEYSTORE_PASSWORD is missing"
+            exit 1
+          }
+
+          test -n "$KEY_ALIAS" || {
+            echo "ERROR: ARTAQI_KEY_ALIAS is missing"
+            exit 1
+          }
+
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$HOME/artaqi-release.jks"
+
+          keytool -list \
             -keystore "$HOME/artaqi-release.jks" \
             -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEYSTORE_PASSWORD" \
-            -alias "$KEY_ALIAS" \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Artaqi Alya,O=Ramses,C=EG"
+            -alias "$KEY_ALIAS" >/dev/null
+
           echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$HOME/artaqi-release.jks" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=$KEY_ALIAS" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
